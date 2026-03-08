@@ -39,7 +39,13 @@ class CMakeExtension(Extension):
 
 
 class CMakeBuild(build_ext):
+    def finalize_options(self):
+        super().finalize_options()
+        if sys.platform == "win32":
+            self.plat_name = "win-amd64"
+
     def build_extension(self, ext: CMakeExtension) -> None:
+        self.plat_name = "win-amd64"  # force 64-bit wheel on Windows
         # Must be in this form due to bug in .resolve() only fixed in Python 3.10+
         ext_fullpath = Path.cwd() / self.get_ext_fullpath(ext.name)
         extdir = ext_fullpath.parent.resolve()
@@ -99,12 +105,13 @@ class CMakeBuild(build_ext):
             # contain a backward-compatibility arch spec already in the
             # generator name.
             if not single_config and not contains_arch:
-                cmake_args += ["-A", PLAT_TO_CMAKE[self.plat_name]]
+                cmake_args += ["-A", "x64"]
 
             # Multi-config generators have a different way to specify configs
             if not single_config:
                 cmake_args += [
-                    f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{cfg.upper()}={extdir}"
+                    f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{cfg.upper()}={extdir}",
+                    f"-DCMAKE_RUNTIME_OUTPUT_DIRECTORY_{cfg.upper()}={extdir}",
                 ]
                 build_args += ["--config", cfg]
 
@@ -140,6 +147,20 @@ class CMakeBuild(build_ext):
             ["cmake", "--build", ".", *build_args], cwd=build_temp, check=True
         )
 
+        import glob, shutil
+        pyfri_src = Path(ext.sourcedir)
+
+        # Copy FRIClient.dll to pyfri source dir
+        fri_dll_path = Path(self.build_lib) / "FRIClient.dll"
+        if fri_dll_path.exists():
+            shutil.copy(str(fri_dll_path), str(pyfri_src))
+
+        # Fix filename mismatch on Windows
+        built = glob.glob(str(Path(self.build_lib) / "_pyfri*.pyd"))
+        if built:
+            shutil.copy(built[0], str(pyfri_src / "_pyfri.pyd"))
+        else:
+            print(f"WARNING: no _pyfri*.pyd found in {self.build_lib}")
 
 setup(
     name="pyfri",

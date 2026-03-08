@@ -11,6 +11,7 @@ include(FetchContent)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(FRI_BUILD_EXAMPLES OFF)
+set(BUILD_SHARED_LIBS OFF)
 
 # set the FRI version
 set(FRI_CLIENT_VERSION_MAJOR 1 CACHE STRING "The FRI client major version." FORCE)
@@ -24,6 +25,12 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(FRI)
+
+if(WIN32)
+    set_target_properties(FRIClient PROPERTIES
+        WINDOWS_EXPORT_ALL_SYMBOLS ON
+    )
+endif()
 
 add_subdirectory(pybind)
 
