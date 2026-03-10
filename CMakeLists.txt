@@ -11,26 +11,23 @@ include(FetchContent)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(FRI_BUILD_EXAMPLES OFF)
-set(BUILD_SHARED_LIBS OFF)
 
 # set the FRI version
 set(FRI_CLIENT_VERSION_MAJOR 1 CACHE STRING "The FRI client major version." FORCE)
 set(FRI_CLIENT_VERSION_MINOR 15 CACHE STRING "The FRI client minor version." FORCE)
 
-# fetch the fri depending on the version
+# Patch the FRI SDK to build FRIClient as STATIC instead of SHARED.
+# WINDOWS_EXPORT_ALL_SYMBOLS (lbr-stack/fri issue #13) corrupts nanopb decode
+# callbacks on MSVC, causing getIpoJointPosition() to return all zeros.
+# A static library embedded directly into _pyfri.pyd avoids this entirely.
 FetchContent_Declare(
     FRI
     GIT_REPOSITORY https://github.com/lbr-stack/fri
     GIT_TAG fri-${FRI_CLIENT_VERSION_MAJOR}.${FRI_CLIENT_VERSION_MINOR}
+    PATCH_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/patch_fri_static.cmake
 )
 
 FetchContent_MakeAvailable(FRI)
-
-if(WIN32)
-    set_target_properties(FRIClient PROPERTIES
-        WINDOWS_EXPORT_ALL_SYMBOLS ON
-    )
-endif()
 
 add_subdirectory(pybind)
 

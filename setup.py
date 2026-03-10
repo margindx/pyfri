@@ -151,11 +151,6 @@ class CMakeBuild(build_ext):
         import glob, shutil
         pyfri_src = Path(ext.sourcedir)
 
-        # Copy FRIClient.dll to pyfri source dir
-        fri_dll_path = Path(self.build_lib) / "FRIClient.dll"
-        if fri_dll_path.exists():
-            shutil.copy(str(fri_dll_path), str(pyfri_src))
-
         # Fix filename mismatch on Windows
         built = glob.glob(str(Path(self.build_lib) / "_pyfri*.pyd"))
         if built:

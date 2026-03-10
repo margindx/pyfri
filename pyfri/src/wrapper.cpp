@@ -301,88 +301,58 @@ PYBIND11_MODULE(_pyfri, m) {
       .def("getTimestampNanoSec", &KUKA::FRI::LBRState::getTimestampNanoSec)
       .def("getMeasuredJointPosition",
            [](const KUKA::FRI::LBRState &self) {
-             // Declare variables
              double data[KUKA::FRI::LBRState::NUMBER_OF_JOINTS];
-             float dataf[KUKA::FRI::LBRState::NUMBER_OF_JOINTS];
-
-             // Retrieve state
              memcpy(data, self.getMeasuredJointPosition(),
                     KUKA::FRI::LBRState::NUMBER_OF_JOINTS * sizeof(double));
-
-             // Parse: double -> float
+             py::array_t<float> result({KUKA::FRI::LBRState::NUMBER_OF_JOINTS});
+             float* res = result.mutable_data();
              for (int i = 0; i < KUKA::FRI::LBRState::NUMBER_OF_JOINTS; i++)
-               dataf[i] = (float)data[i];
-
-             return py::array_t<float>({KUKA::FRI::LBRState::NUMBER_OF_JOINTS},
-                                       dataf);
+               res[i] = (float)data[i];
+             return result;
            })
       .def("getMeasuredTorque",
            [](const KUKA::FRI::LBRState &self) {
-             // Declare variables
              double data[KUKA::FRI::LBRState::NUMBER_OF_JOINTS];
-             float dataf[KUKA::FRI::LBRState::NUMBER_OF_JOINTS];
-
-             // Retrieve state
              memcpy(data, self.getMeasuredTorque(),
                     KUKA::FRI::LBRState::NUMBER_OF_JOINTS * sizeof(double));
-
-             // Parse: double -> float
+             py::array_t<float> result({KUKA::FRI::LBRState::NUMBER_OF_JOINTS});
+             float* res = result.mutable_data();
              for (int i = 0; i < KUKA::FRI::LBRState::NUMBER_OF_JOINTS; i++)
-               dataf[i] = (float)data[i];
-
-             return py::array_t<float>({KUKA::FRI::LBRState::NUMBER_OF_JOINTS},
-                                       dataf);
+               res[i] = (float)data[i];
+             return result;
            })
       .def("getCommandedTorque",
            [](const KUKA::FRI::LBRState &self) {
-             // Declare variables
              double data[KUKA::FRI::LBRState::NUMBER_OF_JOINTS];
-             float dataf[KUKA::FRI::LBRState::NUMBER_OF_JOINTS];
-
-             // Retrieve state
              memcpy(data, self.getCommandedTorque(),
                     KUKA::FRI::LBRState::NUMBER_OF_JOINTS * sizeof(double));
-
-             // Parse: double -> float
+             py::array_t<float> result({KUKA::FRI::LBRState::NUMBER_OF_JOINTS});
+             float* res = result.mutable_data();
              for (int i = 0; i < KUKA::FRI::LBRState::NUMBER_OF_JOINTS; i++)
-               dataf[i] = (float)data[i];
-
-             return py::array_t<float>({KUKA::FRI::LBRState::NUMBER_OF_JOINTS},
-                                       dataf);
+               res[i] = (float)data[i];
+             return result;
            })
       .def("getExternalTorque",
            [](const KUKA::FRI::LBRState &self) {
-             // Declare variables
              double data[KUKA::FRI::LBRState::NUMBER_OF_JOINTS];
-             float dataf[KUKA::FRI::LBRState::NUMBER_OF_JOINTS];
-
-             // Retrieve state
              memcpy(data, self.getExternalTorque(),
                     KUKA::FRI::LBRState::NUMBER_OF_JOINTS * sizeof(double));
-
-             // Parse: double -> float
+             py::array_t<float> result({KUKA::FRI::LBRState::NUMBER_OF_JOINTS});
+             float* res = result.mutable_data();
              for (int i = 0; i < KUKA::FRI::LBRState::NUMBER_OF_JOINTS; i++)
-               dataf[i] = (float)data[i];
-
-             return py::array_t<float>({KUKA::FRI::LBRState::NUMBER_OF_JOINTS},
-                                       dataf);
+               res[i] = (float)data[i];
+             return result;
            })
       .def("getIpoJointPosition",
            [](const KUKA::FRI::LBRState &self) {
-             // Declare variables
              double data[KUKA::FRI::LBRState::NUMBER_OF_JOINTS];
-             float dataf[KUKA::FRI::LBRState::NUMBER_OF_JOINTS];
-
-             // Retrieve state
              memcpy(data, self.getIpoJointPosition(),
                     KUKA::FRI::LBRState::NUMBER_OF_JOINTS * sizeof(double));
-
-             // Parse: double -> float
+             py::array_t<float> result({KUKA::FRI::LBRState::NUMBER_OF_JOINTS});
+             float* res = result.mutable_data();
              for (int i = 0; i < KUKA::FRI::LBRState::NUMBER_OF_JOINTS; i++)
-               dataf[i] = (float)data[i];
-
-             return py::array_t<float>({KUKA::FRI::LBRState::NUMBER_OF_JOINTS},
-                                       dataf);
+               res[i] = (float)data[i];
+             return result;
            })
       .def("getTrackingPerformance",
            &KUKA::FRI::LBRState::getTrackingPerformance)
@@ -392,20 +362,14 @@ PYBIND11_MODULE(_pyfri, m) {
 #if FRI_CLIENT_VERSION_MAJOR == 1
       .def("getCommandedJointPosition",
            [](const KUKA::FRI::LBRState &self) {
-             // Declare variables
              double data[KUKA::FRI::LBRState::NUMBER_OF_JOINTS];
-             float dataf[KUKA::FRI::LBRState::NUMBER_OF_JOINTS];
-
-             // Retrieve state
              memcpy(data, self.getCommandedJointPosition(),
                     KUKA::FRI::LBRState::NUMBER_OF_JOINTS * sizeof(double));
-
-             // Parse: double -> float
+             py::array_t<float> result({KUKA::FRI::LBRState::NUMBER_OF_JOINTS});
+             float* res = result.mutable_data();
              for (int i = 0; i < KUKA::FRI::LBRState::NUMBER_OF_JOINTS; i++)
-               dataf[i] = (float)data[i];
-
-             return py::array_t<float>({KUKA::FRI::LBRState::NUMBER_OF_JOINTS},
-                                       dataf);
+               res[i] = (float)data[i];
+             return result;
            })
 #elif FRI_CLIENT_VERSION_MAJOR == 2
     .def("getMeasuredCartesianPose",
@@ -526,8 +490,10 @@ PYBIND11_MODULE(_pyfri, m) {
       .def("monitor", &KUKA::FRI::LBRClient::monitor)
       .def("waitForCommand", &KUKA::FRI::LBRClient::waitForCommand)
       .def("command", &KUKA::FRI::LBRClient::command)
-      .def("robotState", &KUKA::FRI::LBRClient::robotState)
-      .def("robotCommand", &KUKA::FRI::LBRClient::robotCommand);
+      .def("robotState", &KUKA::FRI::LBRClient::robotState,
+           py::return_value_policy::reference_internal)
+      .def("robotCommand", &KUKA::FRI::LBRClient::robotCommand,
+           py::return_value_policy::reference_internal);
 
   py::class_<PyClientApplication>(m, "ClientApplication")
       .def(py::init<PyLBRClient &>())
